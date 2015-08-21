@@ -28,9 +28,12 @@ userSchema.pre('save', function(next) {
   if (!user.isModified('password')) {
     return next();
   }
+  console.log("Console outside bycrpt");
   bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(user.password, salt, function(err, hash) {
+    if (err) return next(err);
+    bcrypt.hash(user.password, salt, null, function(err, hash) {
       user.password = hash;
+      console.log("Console inside bycrpt");
       next();
     });
   });

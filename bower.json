@@ -1,0 +1,21 @@
+{
+  "name": "mh-invite",
+  "version": "0.0.0",
+  "homepage": "https://github.com/BitBrothers/mh-invite",
+  "authors": [
+    "Sobin George Thomas <sobingt@gmail.com>"
+  ],
+  "description": "mh-invite",
+  "main": "app.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5"
+  }
+}

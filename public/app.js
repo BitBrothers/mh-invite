@@ -40,13 +40,10 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
       });
 
     $urlRouterProvider.otherwise('/');
-
+    
+    $authProvider.signupRedirect = '/login';
     $authProvider.facebook({
       clientId: '631388166902710'
-    });
-
-    $authProvider.google({
-      clientId: '566588809382-t7g6gmdik8q6g7mtk5apqmfqs4uiu37j.apps.googleusercontent.com'
     });
 
     $authProvider.github({
