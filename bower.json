@@ -16,6 +16,18 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.5"
+    "bootstrap": "~3.3.5",
+    "angular": "~1.4.3",
+    "angular-ui-router": "~0.2.13",
+    "font-awesome": "~4.3.0",
+    "angular-resource": "~1.4.2",
+    "angular-sanitize": "~1.4.2",
+    "ng-token-auth": "~0.0.25",
+    "angular-flash-alert": "~1.1.0",
+    "satellizer": "~0.11.2",
+    "angular-strap": "2.2.4",
+    "angular-mocks": "1.4.0",
+    "angular-messages": "~1.4.4",
+    "angular-animate": "~1.4.4"
   }
 }
