@@ -1,25 +1,149 @@
-<div class="container">
-  <div class="panel panel-default">
-    <div class="panel-heading">Home Page</div>
-    <div class="panel-body">
-      <div class="row">
-        <div class="col-sm-6">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus,
-            tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-            fermentum massa justo sit amet risus. Etiam porta sem malesuada
-            magna mollis euismod. Donec sed odio dui.</p>
-          <p><a class="btn btn-primary" href="#">View details »</a></p>
-        </div>
-        <div class="col-sm-6">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus,
-            tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-            fermentum massa justo sit amet risus. Etiam porta sem malesuada
-            magna mollis euismod. Donec sed odio dui.</p>
-          <p><a class="btn btn-primary" href="#">View details »</a></p>
-        </div>
+
+<header>
+  <div class="container">
+    <div class="intro-text"><img ng-src="images/codegurukul.png" class="intro-logo"/><span>
+         
+        and</span><img ng-src="images/startupmitra_light.svg" class="intro-logo"/>
+      <div class="intro-lead-in">Presents</div>
+      <div class="intro-heading">MangloreHack</div>
+      <p>[Campus Edition]</p><span>at</span>
+      <div class="intro-lead-in">Kanara Chamber of Commerce & Industry</div><span>on</span>
+      <div class="intro-lead-in">26th and 27th September 2015</div>
+    </div>
+    <div ng-show="!currentUser.profile.slug" class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12 joinButtons">
+        <button ng-click="register()" class="btn btn-lg regButton">Register</button>
       </div>
     </div>
   </div>
-</div>
+  <div class="overlay"></div>
+</header>
+<!-- About Section-->
+<section id="schedule">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">MangloreHack [Campus Hack]</h2>
+        <h3 class="section-subheading text-muted">Manglore's Largest Campus Hackathon.</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-muted">
+          In the context of a hackathon, the word "hack" is used to describe how multiple technologies can be used together 
+          in a new and innovative way. Teams of up to four people spend the weekend working on innovative software and hardware 
+          solutions to real-world problems. These projects range in platform and application, including elements of web development, 
+          mobile applications, drones, and more. However, many times the most important aspect of a hackathon is the community it 
+          generates and skills that inexperienced hackers walk away with.
+          Mangalore Hack CampusHack aims to federate the next generation of hackers for the Mangalore innovation community.
+          Co-organized by Codegurukul and Startup Mitra, and with a board of advisors which includes educators, technologists, and entrepreneurs, 
+          Mangalore Hack CampusHack organizes the Fellows program and student ‘hackathons’ during the school year in order to create 
+          and empower a community of student-technologists.
+          Mangalore Hack CampusHack organizes once-a-semester campus ‘hackathons': 24-hour coding events in which Mangalore startups present their technologies and students build original applications based on them. Winning teams have presented at the Codegurukul Meetup. Sign up for the Mangalore Hack news for announcements about how to get involved and visit our Hackathon page.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Schedule Section-->
+<section id="schedule">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">Schedule</h2>
+      </div>
+    </div>
+    <div class="row">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+          <tr class="days">
+            <th></th>                                    
+            <th>Day One</th>                                    
+            <th> </th>                                    
+            <th>Day Two</th>
+          </tr>                                
+          <tr>
+            <td class="time">11:00 - 12:00 am</td>                                    
+            <td data-tooltip="Register on our online tool" class="cs335 orange">Registration</td>                                    
+            <td class="time">00:00 - 5:00 am</td>                                    
+            <td data-tooltip="The Hackathon continues" class="cs240 orange">Hackathon</td>
+          </tr>                                
+          <tr>
+            <td class="time">12:00 - 3:00 pm</td>                                    
+            <td class="cs335 blue">Hackathon starts</td>                                    
+            <td class="time">5:00 - 6:00 am</td>                                    
+            <td data-tooltip="Recharge and GO!" class="md352 green">High Tea</td>
+          </tr>                                
+          <tr>
+            <td class="time">3:00 - 4:00 pm</td>                                    
+            <td data-tooltip="Food" class="cs426 green">Meal</td>                                    
+            <td class="time">6:00 - 9:00 am</td>                                    
+            <td data-tooltip="The final hours" class="md352 blue">Hackathon</td>
+          </tr>                                
+          <tr>
+            <td class="time">4:00 - 8:00 pm</td>                                    
+            <td class="md352 blue">Hackathon continues</td>                                    
+            <td class="time">9:00 - 10:00 am</td>                                    
+            <td class="cs240 green">Breakfast</td>
+          </tr>                                
+          <tr>
+            <td class="time">8:00 - 9:00 pm</td>                                    
+            <td data-tooltip="Recharge" class="md303 green">Tea/Coffee and mini-meal</td>                                    
+            <td class="time">10:00 - 12:00 am</td>                                    
+            <td data-tooltip="Almost there ..." class="cs240 blue">Hackathon</td>
+          </tr>                                
+          <tr>
+            <td class="time">9:00 - 12:00 pm</td>                                    
+            <td data-tooltip="Hack away!" class="md313 blue">Hackathon</td>                                    
+            <td class="time">12:00 - 1:30 pm</td>                                    
+            <td data-tooltip="It's judgement time!" class="cs426 purple">Project presentation</td>
+          </tr>                                
+          <tr>
+            <td class="time">12:00 - 1:00 am</td>                                    
+            <td class="md313 green">Mid-night meal</td>                                    
+            <td class="time">2:00 pm</td>                                    
+            <td data-tooltip="Bye!" class="md313 red">The End</td>
+          </tr>                                
+          <tr>
+            <td class="time">10:00 - 12:00 pm</td>                                    
+            <td data-tooltip="Hack all night" class="md313 blue">Hackathon</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<!-- Clients Aside-->
+<aside class="clients">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6"><a href="#"><img ng-src="images/startupmitra.png" alt="GDG" class="img-responsive img-centered"/></a></div>
+      <div class="col-md-3 col-sm-6"><a href="#"><img ng-src="images/kcci.jpg" alt="KCCI" class="img-responsive img-centered"/></a></div>
+      <div class="col-md-3 col-sm-6"><a href="#"><img ng-src="images/gdg.svg" alt="StartupMitra" class="img-responsive img-centered"/></a></div>
+      <div class="col-md-3 col-sm-6"><a href="http://codegurukul.com"><img ng-src="images/codegurukul.png" alt="Codegurukul" class="img-responsive img-centered"/></a></div>
+    </div>
+  </div>
+</aside>
+<section id="map">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="map-canvas"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4"><span class="copyright">Copyright © codegurukul.com 2015</span></div>
+      <div class="col-md-4">
+        <ul class="list-inline social-buttons">
+          <li><a href="#" socialshare="" socialshare-provider="twitter" socialshare-text="Join MangloreHack! Follow us @codegurukul"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="#" socialshare="" socialshare-provider="facebook" socialshare-url="http://manglorehack.com"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="#" socialshare="" socialshare-provider="google+" socialshare-url="http://manglorehack.com"><i class="fa fa-google-plus"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
