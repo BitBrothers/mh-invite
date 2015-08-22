@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'SFNewRepublic';
+  src: url('SF-New-Republic.ttf')  format('truetype') /* Safari, Android, iOS */
+}
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -643,4 +647,48 @@ section:nth-child(odd) h4.section-heading {
 aside.clients img {
   margin: 50px auto;
 }
+.regButton {
+    color: #ffffff;
+    padding: 19px;
+    font-size: 22px;
+    background-color: #5c5c5c;
+}
+
+
+ul.social-buttons {
+    margin-bottom: 0
+}
+ul.social-buttons li a {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    font-size: 20px;
+    line-height: 40px;
+    outline: 0;
+    color: #000;
+    background-color: #fff;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    transition: all .3s
+}
+ul.social-buttons li a:hover,
+ul.social-buttons li a:focus,
+ul.social-buttons li a:active {
+    background-color: #fed136
+}
+footer {
+    padding: 25px 0;
+    text-align: center
+}
+footer span.copyright,
+footer ul.quicklinks {
+    text-transform: none;
+    font-family: Droid Serif, Helvetica Neue, Helvetica, Arial, sans-serif;
+    line-height: 40px
+}
+footer ul.quicklinks {
+    margin-bottom: 0
+}
+
 /*home page end*/
