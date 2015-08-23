@@ -5,6 +5,11 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
         url: '/',
         templateUrl: 'partials/home.html'
       })
+      .state('confirm-email', {
+        url: '/confirm-email',
+        templateUrl: 'partials/confirm-email.html',
+        controller: 'LoginCtrl'
+      })
       .state('login', {
         url: '/login',
         templateUrl: 'partials/login.html',

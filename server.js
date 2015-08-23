@@ -26,6 +26,8 @@ var app = express();
 app.set('port', process.env.PORT || config.port);
 app.use(cors());
 app.use(logger('dev'));
+app.set('views', path.join(__dirname, 'templates'));
+app.set('view engine', 'jade');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

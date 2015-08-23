@@ -7,6 +7,7 @@ var secret = require('../config/secrets');
 var config = new secret();
 
 var User = require('../models/User');
+var emailController = require('./email');
 /*
  |-----------------------------------------------------------
  | Login Required Middleware
@@ -59,6 +60,14 @@ exports.postLogin = function(req, res) {
     if (!user) {
       return res.status(401).send({ message: 'Wrong email and/or password' });
     }
+    if(user.status == "verification-email")
+    {
+      return res.status(401).send({ message: 'Verify your email' });
+    }
+    if(user.status == "account-suspended")
+    {
+      return res.status(401).send({ message: 'Contact the admin as your account is suspended' });
+    }
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
         return res.status(401).send({ message: 'Wrong email and/or password' });
@@ -75,18 +84,23 @@ exports.postLogin = function(req, res) {
  | Create Email and Password Account
  |-----------------------------------------------------------
  */
-exports.postSignUp = function(req, res) {
+exports.postSignUp = function(req, res, next) {
   User.findOne({ email: req.body.email }, function(err, existingUser) {
+    if(err) return next(err);
     if (existingUser) {
       return res.status(409).send({ message: 'Email is already taken' });
     }
     var user = new User({
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      status: 'verification-email'
     });
     user.profile.name = req.body.name;
-    user.save(function() {
-      res.send({ token: createJWT(user) });
+    user.save(function(user) {
+      emailController.sendEmail(user,'verification-email', function(err, msg){
+        if(err) return next(err);
+        return res.status(200).send({ message: 'Verification email send' });
+      });
     });
   });
 };

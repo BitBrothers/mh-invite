@@ -18,7 +18,8 @@ var userSchema = new mongoose.Schema({
     website: { type: String, default: '' },
     picture: { type: String, default: '' }
   },
-  
+  verificationCode: String,
+  status: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });
@@ -28,12 +29,12 @@ userSchema.pre('save', function(next) {
   if (!user.isModified('password')) {
     return next();
   }
-  console.log("Console outside bycrpt");
+  if (user.status =='verification-email')
+    user.verificationCode = makeRandomString(5);
   bcrypt.genSalt(10, function(err, salt) {
     if (err) return next(err);
     bcrypt.hash(user.password, salt, null, function(err, hash) {
       user.password = hash;
-      console.log("Console inside bycrpt");
       next();
     });
   });
@@ -45,4 +46,14 @@ userSchema.methods.comparePassword = function(password, done) {
   });
 };
 
+function makeRandomString(length)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < length; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 module.exports = mongoose.model('User', userSchema);

@@ -7,7 +7,7 @@ angular.module('MyApp')
         password: $scope.password
       })
       .then(function() {
-          $state.go('login');
+          $state.go('confirm-email');
           $alert({
             content: 'Please verify your email id',
             animation: 'fadeZoomFadeDown',
@@ -16,6 +16,7 @@ angular.module('MyApp')
           });
       })
       .catch(function(response) {
+        console.log('response');
         console.log(response);
         if (typeof response.data.message === 'object') {
           angular.forEach(response.data.message, function(message) {
