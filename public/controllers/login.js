@@ -1,9 +1,11 @@
 angular.module('MyApp')
-  .controller('LoginCtrl', function($scope, $alert, $auth) {
+  .controller('LoginCtrl', function($scope, $alert, $auth, ngProgressFactory) {
     $scope.login = function() {
+      $scope.progressbar = ngProgressFactory.createInstance();
+      $scope.progressbar.start();
       $auth.login({ email: $scope.email, password: $scope.password })
         .then(function(data) {
-          console.log(data);
+          $scope.progressbar.complete();
           $alert({
             content: 'You have successfully logged in',
             animation: 'fadeZoomFadeDown',
@@ -12,6 +14,7 @@ angular.module('MyApp')
           });
         })
         .catch(function(response) {
+          $scope.progressbar.complete();
           $alert({
             content: response.data.message,
             animation: 'fadeZoomFadeDown',
@@ -22,6 +25,8 @@ angular.module('MyApp')
         });
     };
     $scope.authenticate = function(provider) {
+      $scope.progressbar = ngProgressFactory.createInstance();
+      $scope.progressbar.start();
       $auth.authenticate(provider)
         .then(function() {
           $alert({
@@ -32,6 +37,7 @@ angular.module('MyApp')
           });
         })
         .catch(function(response) {
+          $scope.progressbar.complete();
           $alert({
             content: response.data ? response.data.message : response,
             animation: 'fadeZoomFadeDown',

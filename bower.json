@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "bootstrap": "~3.3.5",
-    "angular": "~1.4.3",
+    "angular": "1.4.4",
     "angular-ui-router": "~0.2.13",
     "font-awesome": "~4.3.0",
     "angular-resource": "~1.4.2",
@@ -29,5 +29,8 @@
     "angular-mocks": "1.4.0",
     "angular-messages": "~1.4.4",
     "angular-animate": "~1.4.4"
+  },
+  "resolutions": {
+    "angular": "1.4.4"
   }
 }

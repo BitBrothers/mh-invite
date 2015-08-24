@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStrap', 'satellizer'])
+angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStrap', 'satellizer', 'ngProgress'])
   .config(function($stateProvider, $urlRouterProvider, $authProvider) {
     $stateProvider
       .state('home', {
@@ -19,6 +19,10 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
         url: '/login',
         templateUrl: 'partials/login.html',
         controller: 'LoginCtrl'
+      })
+      .state('startups', {
+        url: '/startups',
+        templateUrl: 'partials/startups.html'
       })
       .state('signup', {
         url: '/signup',

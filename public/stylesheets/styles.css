@@ -67,26 +67,6 @@ a {
   transition: 0.25s all;
 }
 
-span.stamp {
-    font-family: 'Vollkorn',serif;
-    font-size: 13px;
-    line-height: 20px;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: red;
-    border: 4px solid red;
-    float: right;
-    padding: 0 7px;
-    border-radius: 6px;
-    opacity: .7;
-    -webkit-transform: rotate(16deg);
-    -o-transform: rotate(16deg);
-    -moz-transform: rotate(16deg);
-    -ms-transform: rotate(16deg);
-    position: absolute;
-    top: 14%;
-    left: 276px;
-}
 .panel {
   border-color: #cfd9D7;
   border-radius: 2px;
@@ -445,11 +425,27 @@ header .intro-text .intro-lead-in {
 
 header .intro-text .intro-heading {
   margin-bottom: 0px;
+  position: relative;
   text-transform: uppercase;
   font-family: Montserrat, Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 50px;
   font-weight: 700;
   line-height: 50px;
+}
+
+.stamp{
+  background-image: url("../images/stamp.png");
+  width: 22%;
+  height: 100%;
+  position: absolute;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  right: 10%;
+  top: -20%;
+  -webkit-transform: rotate(16deg);
+  -o-transform: rotate(16deg);
+  -moz-transform: rotate(16deg);
+  -ms-transform: rotate(16deg);
 }
 
 @media (min-width: 620px) {
@@ -669,6 +665,7 @@ section:nth-child(odd) h4.section-heading {
 aside.clients img {
   margin: 50px auto;
 }
+
 .regButton {
     color: #ffffff;
     padding: 19px;
@@ -713,4 +710,22 @@ footer ul.quicklinks {
     margin-bottom: 0
 }
 
+
+section#map {
+  background-image: url('http://maps.googleapis.com/maps/api/staticmap?center=12.863244,+74.833334&zoom=16&scale=false&size=640x340&maptype=roadmap&format=png&visual_refresh=true&markers=size:mid%7Ccolor:0xff0000%7C%7C12.863244,+74.833334');
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 340px;
+}
+.why-join .col-sm-3 img{
+  width: 128px;
+  height: 128px;
+}
 /*home page end*/
+
+/*Startup recruit page start*/
+.startup .panel-default .col-sm-4 img {
+  height: 100%;
+  width: 100%;
+}
+/*Startup recruit page end*/

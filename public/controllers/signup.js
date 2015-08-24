@@ -1,6 +1,8 @@
 angular.module('MyApp')
-  .controller('SignupCtrl', function($scope, $alert, $auth, $state) {
+  .controller('SignupCtrl', function($scope, $alert, $auth, $state, ngProgressFactory) {
     $scope.signup = function() {
+      $scope.progressbar = ngProgressFactory.createInstance();
+      $scope.progressbar.start();
       $auth.signup({
         name: $scope.name,
         email: $scope.email,
@@ -8,6 +10,7 @@ angular.module('MyApp')
       })
       .then(function(response) {
           $state.go('confirm-email');
+          $scope.progressbar.complete();
           $alert({
             content: 'Please verify your email id',
             animation: 'fadeZoomFadeDown',
@@ -17,6 +20,7 @@ angular.module('MyApp')
       })
       .catch(function(response) {
         if (typeof response.data.message === 'object') {
+          $scope.progressbar.complete();
           angular.forEach(response.data.message, function(message) {
             $alert({
               content: message[0],
@@ -28,6 +32,7 @@ angular.module('MyApp')
         } else {
           if(response.data.message == "Email verification needed")
               $state.go('confirm-email');
+              $scope.progressbar.complete();
               $alert({
                 content: response.data.message,
                 animation: 'fadeZoomFadeDown',
