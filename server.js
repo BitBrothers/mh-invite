@@ -54,6 +54,7 @@ app.put('/api/me', authController.ensureAuthenticated, userController.putCurrent
  */
 app.post('/auth/login', authController.postLogin);
 app.post('/auth/signup', authController.postSignUp);
+app.get('/auth/verify/:code', authController.getVerifyCode);
 app.post('/auth/google', authController.postGoogleLogin);
 app.post('/auth/github', authController.postGithubLogin);
 app.post('/auth/linkedin', authController.postLinkedinLogin);

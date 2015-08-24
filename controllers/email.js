@@ -24,25 +24,25 @@ var transporter = nodemailer.createTransport({
  */
 
 exports.sendEmail = function(user, template, done) {
-  var template = new EmailTemplate(path.join(templatesDir, template));
-//  template.render(user, function (err, results) {
-//    if (err) {
-//      console.log("Error");
-//      return done(err,'Sorry we are expecting a server problem');
-//    }
+  var templateFile = new EmailTemplate(path.join(templatesDir, template));
+  templateFile.render(user, function (err, results) {
+    if (err)
+      return done(err,'Sorry we are experiencing a server problem');
+    console.log(user);
     var mailOptions = {
       to: user.email,
       from: config.email,
       subject: email[template].subject,
-        html: 'results.html',
+        html: results.html,
         text: 'results.text'
     };
     transporter.sendMail(mailOptions, function(err) {
-      var msg = email(template).success;
+      if(err) return done(err, 'Server Error');
+      var msg = email[template].success;
       done(err,msg);
     });
 
-//  });
+  });
 
 }
   

@@ -30,7 +30,7 @@ userSchema.pre('save', function(next) {
     return next();
   }
   if (user.status =='verification-email')
-    user.verificationCode = makeRandomString(5);
+    user.verificationCode = makeRandomString(7);
   bcrypt.genSalt(10, function(err, salt) {
     if (err) return next(err);
     bcrypt.hash(user.password, salt, null, function(err, hash) {

@@ -10,6 +10,11 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
         templateUrl: 'partials/confirm-email.html',
         controller: 'LoginCtrl'
       })
+      .state('add-mobile', {
+        url: '/add-mobile',
+        templateUrl: 'partials/add-mobile.html',
+        controller: 'LoginCtrl'
+      })
       .state('login', {
         url: '/login',
         templateUrl: 'partials/login.html',
@@ -58,10 +63,6 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
     $authProvider.linkedin({
       clientId: '75ituwm22trpn1',
       scope: ['r_emailaddress']
-    });
-
-    $authProvider.twitter({
-      url: '/auth/twitter'
     });
 
   });

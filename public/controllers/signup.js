@@ -6,7 +6,7 @@ angular.module('MyApp')
         email: $scope.email,
         password: $scope.password
       })
-      .then(function() {
+      .then(function(response) {
           $state.go('confirm-email');
           $alert({
             content: 'Please verify your email id',
@@ -16,8 +16,6 @@ angular.module('MyApp')
           });
       })
       .catch(function(response) {
-        console.log('response');
-        console.log(response);
         if (typeof response.data.message === 'object') {
           angular.forEach(response.data.message, function(message) {
             $alert({
@@ -28,13 +26,19 @@ angular.module('MyApp')
             });
           });
         } else {
-          $alert({
-            content: response.data.message,
-            animation: 'fadeZoomFadeDown',
-            type: 'material',
-            duration: 3
-          });
+          if(response.data.message == "Email verification needed")
+              $state.go('confirm-email');
+              $alert({
+                content: response.data.message,
+                animation: 'fadeZoomFadeDown',
+                type: 'material',
+                duration: 3
+              });
         }
       });
+      //Add inside the then closure
+      //$state.go('confirm-email');
+      //$state.go('add-mobile');
+      
     };
   });

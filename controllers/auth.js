@@ -72,13 +72,19 @@ exports.postLogin = function(req, res) {
       if (!isMatch) {
         return res.status(401).send({ message: 'Wrong email and/or password' });
       }
-      res.send({ token: createJWT(user) });
+        if(user.status == "verified")
+        {
+          res.send({ token: createJWT(user), message: 'Need your mobile number' });
+        }
+        else
+          res.send({ token: createJWT(user)});
+      
     });
   });
 };
 
 /*
- |-----------------------------------------------------------
+ |----------------------------------------------------------
  | @Function postSignUp
  | POST /auth/signup
  | Create Email and Password Account
@@ -96,14 +102,39 @@ exports.postSignUp = function(req, res, next) {
       status: 'verification-email'
     });
     user.profile.name = req.body.name;
-    user.save(function(user) {
-      emailController.sendEmail(user,'verification-email', function(err, msg){
-        if(err) return next(err);
-        return res.status(200).send({ message: 'Verification email send' });
+    user.save(function() {
+      emailController.sendEmail(user, 'verification-email', function(err, msg){
+        return res.status(409).send({ message: 'Email verification needed' });     
       });
+      
     });
+    
   });
 };
+
+/*
+ |-----------------------------------------------------------
+ | @Function getVerifyCode
+ | GET /auth/verify/:code
+ | Verify Email via Code
+ |-----------------------------------------------------------
+ */
+exports.getVerifyCode = function(req, res) {
+  User.findOne({ verificationCode: req.params.code }, function(err, user) {
+    if(err) return next(err);
+    if (!user) {
+      return res.status(409).send("Oops!");
+    }
+    user.status= 'verified';
+    user.save(function() {
+      emailController.sendEmail(user, 'welcome-email', function(err, msg){
+        return res.redirect("/#/login");  
+      });
+      
+    });
+    
+  });
+}
 
 /*
  |-----------------------------------------------------------
