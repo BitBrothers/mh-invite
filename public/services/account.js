@@ -4,6 +4,9 @@ angular.module('MyApp')
       getProfile: function() {
         return $http.get('/api/me');
       },
+      getProfileStatus: function() {
+        return $http.get('/api/me/status');
+      },
       updateProfile: function(profileData) {
         return $http.put('/api/me', profileData);
       }

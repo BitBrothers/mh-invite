@@ -3,7 +3,23 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
     $stateProvider
       .state('home', {
         url: '/',
-        templateUrl: 'partials/home.html'
+        templateUrl: 'partials/home.html',
+        resolve: {
+          authenticated: function($q, $location, $auth, Account) {
+            var deferred = $q.defer();
+            if ($auth.isAuthenticated()) {
+              var status = Account.getProfileStatus();
+              if(status =='verified')
+                $location.path('/add-mobile');
+              else if(status=='verification-email')
+                $location.path('/confirm-email');
+            } else {
+              deferred.resolve();
+            }
+
+            return deferred.promise;
+          }
+        }
       })
       .state('confirm-email', {
         url: '/confirm-email',
@@ -39,12 +55,12 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
         templateUrl: 'partials/profile.html',
         controller: 'ProfileCtrl',
         resolve: {
-          authenticated: function($q, $location, $auth) {
+          authenticated: function($q, $location, $auth, Account) {
             var deferred = $q.defer();
-
             if (!$auth.isAuthenticated()) {
               $location.path('/login');
             } else {
+              console.log(Account.getProfileStatus());
               deferred.resolve();
             }
 

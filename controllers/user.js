@@ -10,6 +10,16 @@ exports.getCurrentUser = function(req, res) {
     res.send(user);
   });
 };
+/*
+ |-----------------------------------------------------------
+ | GET /api/me/status
+ |-----------------------------------------------------------
+ */
+exports.getCurrentUserStatus = function(req, res) {
+  User.findById(req.user, function(err, user) {
+    res.send(user.status);
+  });
+};
 
 /*
  |-----------------------------------------------------------
@@ -23,6 +33,7 @@ exports.putCurrentUser = function(req, res) {
     }
     user.profile.name = req.body.name || user.profile.name;
     user.email = req.body.email || user.email;
+    user.mobile = req.body.mobile || user.mobile;
     user.save(function(err) {
       res.status(200).end();
     });

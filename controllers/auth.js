@@ -74,7 +74,7 @@ exports.postLogin = function(req, res) {
       }
         if(user.status == "verified")
         {
-          res.send({ token: createJWT(user), message: 'Need your mobile number' });
+          res.send({ token: createJWT(user), message: 'mobile' });
         }
         else
           res.send({ token: createJWT(user)});
