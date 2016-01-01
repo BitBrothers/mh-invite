@@ -9,6 +9,9 @@ angular.module('MyApp')
       },
       updateProfile: function(profileData) {
         return $http.put('/api/me', profileData);
+      },
+      forgotPassword: function(user){
+        return $http.post('/api/forgotpassword',user);
       }
     };
   });

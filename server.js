@@ -15,7 +15,7 @@ var config = new secret();
 
 var authController = require('./controllers/auth');
 var userController = require('./controllers/user');
-
+var emailController = require('./controllers/email');
 mongoose.connect(config.db);
 mongoose.connection.on('error', function(err) {
   console.log('Error: Could not connect to MongoDB. Did you forget to run `mongod`?'.red);
@@ -39,7 +39,10 @@ if (app.get('env') === 'production') {
   });
 }
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(function(req, res, next){
+  res.locals.host= req.headers.host;
+  next();
+});
 /*
  |-----------------------------------------------------------
  | Route for CurrentUser
@@ -61,9 +64,14 @@ app.post('/auth/github', authController.postGithubLogin);
 app.post('/auth/linkedin', authController.postLinkedinLogin);
 app.post('/auth/facebook', authController.postFacebookLogin);
 app.post('/auth/twitter', authController.postTwitterLogin);
-app.post('/auth/foursquare', authController.postFoursquareLogin);
 app.post('/auth/unlink/:provider', authController.ensureAuthenticated, authController.getUnlinkAuth);
-
+app.get('/email/verify', function(req, res){
+  emailController.sendEmail({
+    email: 'sobingt@gmail.com'
+  }, 'verification-email', function(err, msg){
+    return res.status(200).send({ message: 'Email verification needed' });     
+  });
+})
 /*
  |-----------------------------------------------------------
  | Start the Server

@@ -56,30 +56,46 @@ function createJWT(user) {
  |-----------------------------------------------------------
  */
 exports.postLogin = function(req, res) {
-  User.findOne({ email: req.body.email }, '+password', function(err, user) {
+  User.findOne({ 
+    email: req.body.email 
+  }, function(err, user) {
+    if (err)
+      return err;
     if (!user) {
-      return res.status(401).send({ message: 'Wrong email and/or password' });
+      return res.status(401).send({ 
+        message: 'Wrong email and/or password',
+        status:  'auth-failed'
+      });
     }
     if(user.status == "verification-email")
     {
-      return res.status(401).send({ message: 'Verify your email' });
+      return res.status(401).send({ 
+        message: 'Verify your email',
+        status:  'verify-email' 
+      });
     }
     if(user.status == "account-suspended")
     {
-      return res.status(401).send({ message: 'Contact the admin as your account is suspended' });
+      return res.status(401).send({ 
+        message: 'Contact the admin as your account is suspended',
+        status:  'suspended'
+      });
     }
+    
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (!isMatch) {
-        return res.status(401).send({ message: 'Wrong email and/or password' });
+        return res.status(401).send({ 
+          message: 'Wrong email and/or password',
+          status:  'auth-failed'
+        });
       }
-        if(user.status == "verified")
-        {
-          res.send({ token: createJWT(user), message: 'mobile' });
-        }
-        else
-          res.send({ token: createJWT(user)});
-      
+      res.send({ 
+        token: createJWT(user),
+        message: 'Successfully logged',
+        status:  'success'
+      });
     });
+    
   });
 };
 
@@ -103,6 +119,7 @@ exports.postSignUp = function(req, res, next) {
     });
     user.profile.name = req.body.name;
     user.save(function() {
+      user.host = req.headers.host;
       emailController.sendEmail(user, 'verification-email', function(err, msg){
         return res.status(409).send({ message: 'Email verification needed' });     
       });
@@ -127,6 +144,7 @@ exports.getVerifyCode = function(req, res) {
     }
     user.status= 'verified';
     user.save(function() {
+      user.host = req.headers.host;
       emailController.sendEmail(user, 'welcome-email', function(err, msg){
         return res.redirect("/#/login");  
       });
@@ -356,76 +374,6 @@ exports.postLinkedinLogin = function(req, res) {
 
 /*
  |-----------------------------------------------------------
- | @Function postLiveLogin
- | POST /auth/live
- | Login with Windows Live
- |-----------------------------------------------------------
- */
-exports.postLiveAuth = function(req, res) {
-  async.waterfall([
-    // Step 1. Exchange authorization code for access token.
-    function(done) {
-      var accessTokenUrl = 'https://login.live.com/oauth20_token.srf';
-      var params = {
-        code: req.body.code,
-        client_id: req.body.clientId,
-        client_secret: config.live.clientSecret,
-        redirect_uri: req.body.redirectUri,
-        grant_type: 'authorization_code'
-      };
-      request.post(accessTokenUrl, { form: params, json: true }, function(err, response, accessToken) {
-        done(null, accessToken);
-      });
-    },
-    // Step 2. Retrieve profile information about the current user.
-    function(accessToken, done) {
-      var profileUrl = 'https://apis.live.net/v5.0/me?access_token=' + accessToken.access_token;
-      request.get({ url: profileUrl, json: true }, function(err, response, profile) {
-        done(err, profile);
-      });
-    },
-    function(profile) {
-      // Step 3a. Link user accounts.
-      if (req.headers.authorization) {
-        User.findOne({ live: profile.id }, function(err, user) {
-          if (user) {
-            return res.status(409).send({ message: 'There is already a Windows Live account that belongs to you' });
-          }
-          var token = req.headers.authorization.split(' ')[1];
-          var payload = jwt.decode(token, config.tokenSecret);
-          User.findById(payload.sub, function(err, existingUser) {
-            if (!existingUser) {
-              return res.status(400).send({ message: 'User not found' });
-            }
-            existingUser.live = profile.id;
-            existingUser.profile.name = existingUser.profile.name || profile.name;
-            existingUser.save(function() {
-              var token = createJWT(existingUser);
-              res.send({ token: token });
-            });
-          });
-        });
-      } else {
-        // Step 3b. Create a new user or return an existing account.
-        User.findOne({ live: profile.id }, function(err, user) {
-          if (user) {
-            return res.send({ token: createJWT(user) });
-          }
-          var newUser = new User();
-          newUser.live = profile.id;
-          newUser.profile.name = profile.name;
-          newUser.save(function() {
-            var token = createJWT(newUser);
-            res.send({ token: token });
-          });
-        });
-      }
-    }
-  ]);
-};
-
-/*
- |-----------------------------------------------------------
  | @Function postFacebookLogin
  | POST /auth/facebook
  | Login with Facebook
@@ -487,71 +435,6 @@ exports.postFacebookLogin = function(req, res) {
           user.profile.name = profile.name;
           user.email = user.email || profile.email;
           console.log("Profile "+profile.email);
-          user.save(function() {
-            var token = createJWT(user);
-            res.send({ token: token });
-          });
-        });
-      }
-    });
-  });
-};
-
-/*
- |-----------------------------------------------------------
- | @Function postYahooLogin
- | POST /auth/yahoo
- | Login with Yahoo
- |-----------------------------------------------------------
- */
-exports.postYahooLogin = function(req, res) {
-  var accessTokenUrl = 'https://api.login.yahoo.com/oauth2/get_token';
-  var clientId = req.body.clientId;
-  var clientSecret = config.yahoo.clientSecret;
-  var formData = {
-    code: req.body.code,
-    redirect_uri: req.body.redirectUri,
-    grant_type: 'authorization_code'
-  };
-  var headers = { Authorization: 'Basic ' + new Buffer(clientId + ':' + clientSecret).toString('base64') };
-
-  // Step 1. Exchange authorization code for access token.
-  request.post({ url: accessTokenUrl, form: formData, headers: headers, json: true }, function(err, response, body) {
-    var socialApiUrl = 'https://social.yahooapis.com/v1/user/' + body.xoauth_yahoo_guid + '/profile?format=json';
-    var headers = { Authorization: 'Bearer ' + body.access_token };
-
-    // Step 2. Retrieve profile information about the current user.
-    request.get({ url: socialApiUrl, headers: headers, json: true }, function(err, response, body) {
-
-      // Step 3a. Link user accounts.
-      if (req.headers.authorization) {
-        User.findOne({ yahoo: body.profile.guid }, function(err, existingUser) {
-          if (existingUser) {
-            return res.status(409).send({ message: 'There is already a Yahoo account that belongs to you' });
-          }
-          var token = req.headers.authorization.split(' ')[1];
-          var payload = jwt.decode(token, config.tokenSecret);
-          User.findById(payload.sub, function(err, user) {
-            if (!user) {
-              return res.status(400).send({ message: 'User not found' });
-            }
-            user.yahoo = body.profile.guid;
-            user.profile.name = user.profile.name || body.profile.nickname;
-            user.save(function() {
-              var token = createJWT(user);
-              res.send({ token: token });
-            });
-          });
-        });
-      } else {
-        // Step 3b. Create a new user account or return an existing one.
-        User.findOne({ yahoo: body.profile.guid }, function(err, existingUser) {
-          if (existingUser) {
-            return res.send({ token: createJWT(existingUser) });
-          }
-          var user = new User();
-          user.yahoo = body.profile.guid;
-          user.profile.name = body.profile.nickname;
           user.save(function() {
             var token = createJWT(user);
             res.send({ token: token });
@@ -661,78 +544,6 @@ exports.postTwitterLogin = function(req, res) {
     });
   }
 };
-
-/*
- |-----------------------------------------------------------
- | @Function postFoursquareLogin
- | POST /auth/foursquare
- | Login with Foursquare
- |-----------------------------------------------------------
- */
-exports.postFoursquareLogin = function(req, res) {
-  var accessTokenUrl = 'https://foursquare.com/oauth2/access_token';
-  var profileUrl = 'https://api.foursquare.com/v2/users/self';
-  var formData = {
-    code: req.body.code,
-    client_id: req.body.clientId,
-    client_secret: config.foursquare.clientSecret,
-    redirect_uri: req.body.redirectUri,
-    grant_type: 'authorization_code'
-  };
-
-  // Step 1. Exchange authorization code for access token.
-  request.post({ url: accessTokenUrl, form: formData, json: true }, function(err, response, body) {
-    var params = {
-      v: '20140806',
-      oauth_token: body.access_token
-    };
-
-    // Step 2. Retrieve information about the current user.
-    request.get({ url: profileUrl, qs: params, json: true }, function(err, response, profile) {
-      profile = profile.response.user;
-
-      // Step 3a. Link user accounts.
-      if (req.headers.authorization) {
-        User.findOne({ foursquare: profile.id }, function(err, existingUser) {
-          if (existingUser) {
-            return res.status(409).send({ message: 'There is already a Foursquare account that belongs to you' });
-          }
-          var token = req.headers.authorization.split(' ')[1];
-          var payload = jwt.decode(token, config.tokenSecret);
-          User.findById(payload.sub, function(err, user) {
-            if (!user) {
-              return res.status(400).send({ message: 'User not found' });
-            }
-            user.foursquare = profile.id;
-            user.profile.picture = user.profile.picture || profile.photo.prefix + '300x300' + profile.photo.suffix;
-            user.profile.name = user.profile.name || profile.firstName + ' ' + profile.lastName;
-            user.save(function() {
-              var token = createJWT(user);
-              res.send({ token: token });
-            });
-          });
-        });
-      } else {
-        // Step 3b. Create a new user account or return an existing one.
-        User.findOne({ foursquare: profile.id }, function(err, existingUser) {
-          if (existingUser) {
-            var token = createJWT(existingUser);
-            return res.send({ token: token });
-          }
-          var user = new User();
-          user.foursquare = profile.id;
-          user.profile.picture = profile.photo.prefix + '300x300' + profile.photo.suffix;
-          user.profile.name = profile.firstName + ' ' + profile.lastName;
-          user.save(function() {
-            var token = createJWT(user);
-            res.send({ token: token });
-          });
-        });
-      }
-    });
-  });
-};
-
 
 /*
  |-----------------------------------------------------------

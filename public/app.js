@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStrap', 'satellizer', 'ngProgress'])
+angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStrap', 'satellizer'])
   .config(function($stateProvider, $urlRouterProvider, $authProvider) {
     $stateProvider
       .state('home', {
@@ -34,6 +34,11 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ui.router', 'mgcrea.ngStra
       .state('login', {
         url: '/login',
         templateUrl: 'partials/login.html',
+        controller: 'LoginCtrl'
+      })
+      .state('forgot-password', {
+        url: '/forgot-password',
+        templateUrl: 'partials/forgot-password.html',
         controller: 'LoginCtrl'
       })
       .state('startups', {

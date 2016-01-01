@@ -17,6 +17,7 @@ exports.getCurrentUser = function(req, res) {
  */
 exports.getCurrentUserStatus = function(req, res) {
   User.findById(req.user, function(err, user) {
+    console.log(user);
     res.send(user.status);
   });
 };
@@ -40,3 +41,44 @@ exports.putCurrentUser = function(req, res) {
   });
 };
 
+exports.postForgot = function(req, res, next) {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(16, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findOne({ email: req.body.email.toLowerCase() }, function(err, user) {
+        if (!user) {
+          req.flash('errors', { msg: 'No account with that email address exists.' });
+          return res.redirect('/forgot');
+        }
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+      var transporter = nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: secrets.sendgrid.user,
+          pass: secrets.sendgrid.password
+        }
+      });
+      transporter.sendMail(mailOptions, function(err) {
+        req.flash('info', { msg: 'An e-mail has been sent to ' + user.email + ' with further instructions.' });
+        done(err, 'done');
+      });
+    }
+  ], function(err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/forgot');
+  });
+};

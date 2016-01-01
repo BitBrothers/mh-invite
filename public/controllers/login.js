@@ -1,43 +1,46 @@
 angular.module('MyApp')
-  .controller('LoginCtrl', function($scope, $state, $alert, $auth, Account, ngProgressFactory) {
+  .controller('LoginCtrl', function($scope, $state, $alert, $auth, $http, Account) {
     $scope.login = function() {
-      $scope.progressbar = ngProgressFactory.createInstance();
-      $scope.progressbar.start();
       $scope.state='home';
       $auth.login({ email: $scope.email, password: $scope.password })
         .then(function(response) {
-          $scope.progressbar.complete();
-          console.log('response.data.message');
-          console.log(response.data.message);
-          if(response.data.message == 'mobile')
-          {
-            $scope.state='add-mobile';
-            $state.go($scope.state);
-          }
+          var message = "You have successfully logged in";
           $alert({
-            content: 'You have successfully logged in',
+            content: message,
             animation: 'fadeZoomFadeDown',
             type: 'material',
             duration: 3
           });
+          $state.go($scope.state);
         })
         .catch(function(response) {
-          $scope.progressbar.complete();
-          $alert({
-            content: response.data.message,
-            animation: 'fadeZoomFadeDown',
-            type: 'material',
-            duration: 3
-          });
-          
+          console.log(response.data);
+          if(response.data.status == 'verify-email')
+          {
+            $alert({
+              content: response.data.message,
+              animation: 'fadeZoomFadeDown',
+              type: 'material',
+              duration: 3
+            });
+            $scope.state='confirm-email';
+            $state.go($scope.state);
+          }
+          else
+          {
+            $alert({
+              content: response.data.message,
+              animation: 'fadeZoomFadeDown',
+              type: 'material',
+              duration: 3
+            });
+            $scope.state='login';
+            $state.go($scope.state);            
+          }
+
         });
-      console.log('$scope.state');
-      console.log($scope.state);
-      $state.go($scope.state);
     };
     $scope.authenticate = function(provider) {
-      $scope.progressbar = ngProgressFactory.createInstance();
-      $scope.progressbar.start();
       $auth.authenticate(provider)
         .then(function() {
           $alert({
@@ -48,7 +51,6 @@ angular.module('MyApp')
           });
         })
         .catch(function(response) {
-          $scope.progressbar.complete();
           $alert({
             content: response.data ? response.data.message : response,
             animation: 'fadeZoomFadeDown',
@@ -74,6 +76,15 @@ angular.module('MyApp')
         });
         $state.go('home');
       });
+    };
+    $scope.forgotPassword = function(){
+      $scope.forgotPassword = function(){
+        $scope.state='login';
+        Account.forgotPassword({
+          email: $scope.email
+        });        
+      };
+
     };
   
 });

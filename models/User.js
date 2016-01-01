@@ -27,11 +27,16 @@ var userSchema = new mongoose.Schema({
 
 userSchema.pre('save', function(next) {
   var user = this;
+  if(user.isModified('status') && user.status =='verification-email')
+    user.verificationCode = makeRandomString(14);
+  if(user.isModified('status') && user.status =='reset-password')
+  {
+    user.resetPasswordToken = makeRandomString(14);
+    user.resetPasswordExpires = Date.now() + 3600000;
+  }
   if (!user.isModified('password')) {
     return next();
   }
-  if (user.status =='verification-email')
-    user.verificationCode = makeRandomString(7);
   bcrypt.genSalt(10, function(err, salt) {
     if (err) return next(err);
     bcrypt.hash(user.password, salt, null, function(err, hash) {
